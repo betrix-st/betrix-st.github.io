@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BETRIX — Predict What Happens Next</title>
+<style>
+:root{
+  --bg:#05070d;--panel:#0b101b;--panel2:#0d1423;--line:rgba(103,139,235,.25);
+  --text:#f5f7ff;--muted:#8d9ab6;--blue:#5c8dff;--purple:#835cff;
+  --green:#29e39c;--red:#ff4568;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+.page{
+  min-height:100vh;position:relative;overflow:hidden;
+  background:
+    radial-gradient(700px 450px at 50% 8%,rgba(73,100,205,.18),transparent 67%),
+    radial-gradient(500px 500px at 10% 55%,rgba(69,74,185,.12),transparent 70%),
+    #05070d;
+}
+.page:before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(93,141,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(93,141,255,.035) 1px,transparent 1px);
+  background-size:54px 54px;mask-image:linear-gradient(to bottom,black,transparent 80%);
+}
+.container{width:min(1080px,calc(100% - 34px));margin:auto;position:relative}
+.header{height:88px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;font-weight:950;font-size:24px;letter-spacing:-.04em}
+.mark{
+  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#121d3d,#070d1b);border:1px solid #345dc1;
+  box-shadow:0 0 35px rgba(81,127,255,.15);
+}
+.mark:after{content:"";width:17px;height:17px;border:5px solid #5e91ff;border-right-color:transparent;border-radius:50%;transform:rotate(-38deg)}
+.live{padding:10px 15px;border:1px solid var(--line);border-radius:999px;background:rgba(11,16,27,.72);font-size:13px;font-weight:800;color:#aab7d1}
+.live i{display:inline-block;width:8px;height:8px;background:#ff4568;border-radius:50%;margin-right:8px;box-shadow:0 0 13px #ff4568}
+.hero{text-align:center;padding:65px 0 25px}
+.eyebrow{text-transform:uppercase;letter-spacing:.28em;font-size:12px;font-weight:900;color:#7184ac;margin-bottom:19px}
+h1{font-size:clamp(50px,8vw,88px);line-height:.9;letter-spacing:-.07em;margin:0;font-weight:950}
+.grad{background:linear-gradient(95deg,#4e8cff,#8a5cff,#5b9bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{margin:22px auto 0;color:#a5b0c8;text-transform:uppercase;letter-spacing:.22em;font-size:13px;font-weight:800}
+.actions{width:min(720px,100%);margin:38px auto 0}
+.promo{
+  padding:22px;border:1px solid rgba(92,141,255,.5);border-radius:25px;
+  background:linear-gradient(145deg,rgba(17,27,55,.96),rgba(7,11,20,.96));
+  box-shadow:0 20px 80px rgba(56,90,190,.14),inset 0 1px rgba(255,255,255,.05);
+}
+.promo-title{text-align:left;text-transform:uppercase;letter-spacing:.25em;color:#8194bf;font-size:11px;font-weight:900;margin:0 0 10px 7px}
+.promo-row{display:grid;grid-template-columns:1fr 145px;gap:10px}
+.code{
+  min-height:62px;display:flex;align-items:center;justify-content:center;border-radius:15px;
+  border:1px solid rgba(115,145,225,.2);background:#070b14;font-size:24px;font-weight:950;letter-spacing:.14em;
+}
+.copy{
+  border:1px solid #3d66cf;border-radius:15px;background:linear-gradient(135deg,#1d3474,#111c40);
+  color:#f1f5ff;font-size:16px;font-weight:950;cursor:pointer;transition:.2s;
+}
+.copy:hover{transform:translateY(-2px);filter:brightness(1.15)}
+.copy.ok{background:linear-gradient(135deg,#12684f,#0b4335);border-color:#29e39c}
+.offer{margin-top:15px;text-transform:uppercase;font-weight:900;letter-spacing:.13em;color:#a9b4cc;font-size:17px}
+.offer strong{color:var(--green)}.offer b{color:#7fa2ff}
+.scope{margin-top:8px;color:#65728c;text-transform:uppercase;letter-spacing:.12em;font-size:10px;font-weight:800}
+.cta{
+  display:flex;align-items:center;justify-content:center;gap:18px;margin-top:12px;min-height:68px;
+  border-radius:17px;border:1px solid rgba(119,147,228,.32);background:linear-gradient(135deg,#101a34,#0b1020);
+  color:#f2f5ff;font-size:19px;font-weight:950;box-shadow:0 15px 45px rgba(0,0,0,.28);transition:.2s;
+}
+.cta:hover{transform:translateY(-3px);border-color:#5c8dff;box-shadow:0 20px 60px rgba(70,111,230,.18)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px auto 0;width:min(720px,100%)}
+.stat{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(10,15,25,.72)}
+.stat strong{display:block;font-size:28px;letter-spacing:-.04em}.stat span{display:block;color:#6e7c98;font-size:10px;text-transform:uppercase;letter-spacing:.16em;font-weight:800;margin-top:5px}
+.events{padding:38px 0 30px}
+.events-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:15px}
+.events-head h2{margin:0;font-size:19px;letter-spacing:-.03em}.events-head span{color:#66748f;font-size:11px;text-transform:uppercase;letter-spacing:.16em;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{
+  min-height:205px;border:1px solid var(--line);border-radius:22px;overflow:hidden;position:relative;
+  background:linear-gradient(150deg,rgba(16,24,40,.96),rgba(7,10,17,.98));box-shadow:0 16px 45px rgba(0,0,0,.25);
+}
+.art{height:95px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0b1530,#111025)}
+.card:nth-child(2) .art{background:linear-gradient(135deg,#17172a,#0d1627)}
+.card:nth-child(3) .art{background:linear-gradient(135deg,#101e1a,#0d1420)}
+.btc{
+  position:absolute;right:19px;top:14px;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid #7fa4ff;color:#d9e5ff;font-size:29px;font-weight:950;
+  background:radial-gradient(circle at 35% 30%,#243c83,#10192f);box-shadow:0 0 35px rgba(91,141,255,.22);
+}
+.politic{
+  position:absolute;right:22px;bottom:-9px;width:67px;height:82px;
+}
+.politic .head{width:40px;height:40px;border-radius:50%;background:linear-gradient(145deg,#e8c0a1,#9c684f);margin:auto}
+.politic .body{width:67px;height:52px;background:linear-gradient(145deg,#26385e,#101a32);border-radius:35px 35px 0 0;margin-top:-1px}
+.stadium{position:absolute;inset:0;background:repeating-linear-gradient(165deg,transparent 0 13px,rgba(76,217,170,.12) 14px 16px);transform:skewY(-7deg)}
+.ball{position:absolute;right:26px;top:20px;width:52px;height:52px;border-radius:50%;background:#e9edf8;color:#0a0e18;display:grid;place-items:center;font-size:25px;box-shadow:0 0 35px rgba(255,255,255,.12)}
+.card-body{padding:15px 16px}.tag{color:#667895;text-transform:uppercase;letter-spacing:.16em;font-size:9px;font-weight:900}
+.question{font-size:15px;font-weight:900;line-height:1.25;margin:6px 0 12px}
+.pills{display:flex;gap:8px}.pill{flex:1;text-align:center;padding:8px;border-radius:9px;font-size:11px;font-weight:900}
+.yes{background:rgba(41,227,156,.1);color:#35e5a5;border:1px solid rgba(41,227,156,.2)}.no{background:rgba(92,141,255,.1);color:#82a4ff;border:1px solid rgba(92,141,255,.18)}
+.disclaimer{text-align:center;padding:22px 0 28px;color:#4e5a72;font-size:10px;letter-spacing:.04em}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.promo-row{grid-template-columns:1fr}.copy{min-height:58px}.hero{padding-top:48px}.events{padding-top:25px}}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="container">
+<header class="header">
+  <a class="brand" href="https://betrix.st/" target="_blank" rel="noopener"><span class="mark"></span>BETRIX</a>
+  <div class="live"><i></i>Live Markets</div>
+</header>
+
+<main class="hero">
+  <div class="eyebrow">Real events. Real-time markets.</div>
+  <h1>PREDICT THE<br><span class="grad">NEXT MOVE.</span></h1>
+  <div class="sub">World events • Sports • Crypto • Politics • More</div>
+
+  <div class="actions">
+    <section class="promo">
+      <div class="promo-title">Exclusive Promo Code</div>
+      <div class="promo-row">
+        <div class="code" id="promoCode">BETRIX3000</div>
+        <button class="copy" id="copyBtn" type="button">▣ &nbsp; COPY CODE</button>
+      </div>
+      <div class="offer">Get from <strong>$25</strong> to <b>$3,000</b></div>
+      <div class="scope">Copy your code first — then enter BETRIX</div>
+    </section>
+
+    <a class="cta" href="https://betrix.st/" target="_blank" rel="noopener noreferrer">
+      ENTER BETRIX <span style="font-size:28px">→</span>
+    </a>
+
+    <div class="stats">
+      <div class="stat"><strong>3.2M+</strong><span>Users</span></div>
+      <div class="stat"><strong>$2B+</strong><span>Market Volume</span></div>
+    </div>
+  </div>
+</main>
+
+<section class="events">
+  <div class="events-head"><h2>Markets people are watching</h2><span>Live examples</span></div>
+  <div class="grid">
+    <article class="card">
+      <div class="art"><div class="btc">₿</div></div>
+      <div class="card-body"><div class="tag">Crypto</div><div class="question">Will Bitcoin move up?</div><div class="pills"><div class="pill yes">YES</div><div class="pill no">NO</div></div></div>
+    </article>
+    <article class="card">
+      <div class="art"><div class="politic"><div class="head"></div><div class="body"></div></div></div>
+      <div class="card-body"><div class="tag">Politics</div><div class="question">Will the next presidential term go to the current front-runner?</div><div class="pills"><div class="pill yes">YES</div><div class="pill no">NO</div></div></div>
+    </article>
+    <article class="card">
+      <div class="art"><div class="stadium"></div><div class="ball">⚽</div></div>
+      <div class="card-body"><div class="tag">Sports</div><div class="question">Who takes the next big match?</div><div class="pills"><div class="pill yes">YES</div><div class="pill no">NO</div></div></div>
+    </article>
+  </div>
+</section>
+
+<div class="disclaimer">18+ • Availability, markets and promotional eligibility vary by jurisdiction. Terms apply.</div>
+</div>
+</div>
+
+<script>
+(function(){
+  const code = 'BETRIX3000';
+  const codeBox = document.getElementById('promoCode');
+  const btn = document.getElementById('copyBtn');
+
+  function showCopied(){
+    btn.textContent = '✓  COPIED';
+    btn.classList.add('ok');
+    setTimeout(function(){ btn.textContent='▣  COPY CODE'; btn.classList.remove('ok'); }, 1800);
+  }
+
+  function legacyCopy(){
+    const input = document.createElement('input');
+    input.value = code;
+    input.setAttribute('readonly','');
+    input.style.position='fixed';
+    input.style.left='-10000px';
+    input.style.top='0';
+    document.body.appendChild(input);
+    input.focus();
+    input.select();
+    input.setSelectionRange(0, input.value.length);
+    let ok=false;
+    try { ok=document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(input);
+    return ok;
+  }
+
+  btn.addEventListener('click', function(){
+    // First try the most compatible synchronous method.
+    if (legacyCopy()) { showCopied(); return; }
+
+    // Then try the modern Clipboard API where available.
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      navigator.clipboard.writeText(code).then(showCopied).catch(function(){
+        // Last resort: select the visible code.
+        const range=document.createRange();
+        range.selectNodeContents(codeBox);
+        const sel=window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        btn.textContent='SELECTED — PRESS CTRL/CMD+C';
+        setTimeout(function(){btn.textContent='▣  COPY CODE'},2200);
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
